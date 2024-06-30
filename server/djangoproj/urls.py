@@ -18,14 +18,19 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.static import serve  # Import serve to serve static files
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('djangoapp/', include('djangoapp.urls')),
+    path('djangoapp/', include('djangoapp.urls')),  # Assuming your app is named djangoapp
+    path('dealers/', TemplateView.as_view(template_name="index.html")),  # Render Dealers component
+    path('dealer/<int:dealer_id>/', TemplateView.as_view(template_name="index.html")),  # Render Dealer component
+    path('postreview/<int:dealer_id>/', TemplateView.as_view(template_name="index.html")),  # Render PostReview component
     path('', TemplateView.as_view(template_name="Home.html")),
-        path('about/', TemplateView.as_view(template_name="About.html")),
-            path('contact/', TemplateView.as_view(template_name="Contact.html")),
-            path('login/', TemplateView.as_view(template_name="index.html")),
-                path('register/', TemplateView.as_view(template_name="index.html")),
-                
+    path('about/', TemplateView.as_view(template_name="About.html")),
+    path('contact/', TemplateView.as_view(template_name="Contact.html")),
+    path('login/', TemplateView.as_view(template_name="index.html")),
+    path('register/', TemplateView.as_view(template_name="index.html")),
+    path('manifest.json', serve, {'document_root': 'frontend/public/manifest.json'}),  # Serve manifest.json
+    path('dealer/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

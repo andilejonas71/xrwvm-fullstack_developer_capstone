@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, login, authenticate
@@ -112,6 +113,14 @@ def get_dealer_details(request, dealer_id):
         return JsonResponse({"status":400,"message":"Bad Request"})
 # Create a `get_dealer_details` view to render the dealer details
 # def get_dealer_details(request, dealer_id):
+def get_dealer_reviews(request, dealer_id):
+    # Ensure the function correctly fetches reviews for a dealer
+    endpoint = f"/fetchReviews/dealer/{dealer_id}"
+    reviews = get_request(endpoint)
+    for review_detail in reviews:
+        response = analyze_review_sentiments(review_detail['review'])
+        review_detail['sentiment'] = response['sentiment']
+    return JsonResponse({"status": 200, "reviews": reviews})
 #     ...
 def get_dealer_reviews(request, dealer_id):
     # if dealer id has been provided
@@ -138,3 +147,5 @@ def add_review(request):
             return JsonResponse({"status":401,"message":"Error in posting review"})
     else:
         return JsonResponse({"status":403,"message":"Unauthorized"})
+
+        #new
